@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="page-header" id="banner">
+    <div class="row">
+      <div class="col-lg-8 col-md-7 col-sm-6">
+        <h1>Responsive Image Gallery</h1>
+        <p class="lead">by <a href="https://github.com/brandonwilliams" target="_blank">Brandon Williams</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="row">
+      <div class="form-group">
+        <div class="custom-control custom-switch">
+          <input type="checkbox" class="custom-control-input" id="customSwitch1" [checked]="grayscale ? 'checked' : null" (change)="grayscale = !grayscale">
+          <label class="custom-control-label" for="customSwitch1">Grayscale {{ grayscale ? 'On' : 'Off' }}</label>
+        </div>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+
+        <button type="button" [ngClass]="!selectedSize ? 'btn-primary' : 'btn-secondary'" class="btn btn-sm mr-1" (click)="selectedSize = null; loadImages();">All</button>
+        <button type="button" *ngFor="let size of sizes; let si = index;" [ngClass]="size == selectedSize || !selectedSize ? 'btn-primary' : 'btn-secondary'" class="btn btn-sm mr-1" (click)="selectedSize = size; loadImages();">{{ size }}</button>
+    </div>
+  </div>
+
+    <div class="row text-center mb-3">
+      <div class="col-sm-6 col-md-4 col-lg-3 p-0" *ngFor="let image of pageOfItems; let i = index">
+          <a
+          [style.background-color]="!selectedSize || selectedSize == image.width + ' x ' + image.height ? 'transparent' : 'black'"
+          style="display:block;"
+          (click)="selectedImage = image; open(mymodal)"
+          target="_blank">
+            <img
+            [style.opacity]="!selectedSize || selectedSize == image.width + ' x ' + image.height ? 1.0 : 0.25"
+            [src]="imgUrl + '/id/' + image.id + '/' + width + '/' + height + (grayscale ? '?grayscale' : '')"
+            class="img-fluid"
+            alt="Responsive image">
+          </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+          <jw-pagination [items]="imagesFiltered" [pageSize]="12" (changePage)="onChangePage($event)"></jw-pagination>
+      </div>
+
+    </div>
+
+</div>
+
+
+
+  <ng-template #mymodal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Image # {{ selectedImage.id }} &nbsp;<small>({{ selectedImage.width }} x {{ selectedImage.height }})</small></h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="col-xs-12 text-center">
+              <img
+              [src]="imgUrl + '/id/' + selectedImage.id + '/' + selectedImage.width + '/' + selectedImage.height + (grayscale ? '?grayscale' : '')"
+              class="img-fluid"
+              alt="Responsive image">
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+      </div>
+    </ng-template>
